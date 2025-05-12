@@ -2,14 +2,15 @@
 import os
 from flask import Flask
 from datetime import datetime
+from flask import render_template
 
 port = int(os.environ.get("PORT", 8080))
 app = Flask(__name__)
 
 @app.route("/")
-def home():
-    name = os.environ.get("NAME", "World")
-    return f"Hello {name}!"
+def hello():
+    return render_template("index.html", name="Ashvik")
+
 @app.route("/<username>")
 def greet_user(username):
     hour = datetime.now().hour
