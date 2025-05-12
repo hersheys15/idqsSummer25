@@ -1,11 +1,11 @@
 # main.py
 import os
-from flask import Flask
+from flask import Flask, render_template
 from datetime import datetime
 from flask import render_template
 
 port = int(os.environ.get("PORT", 8080))
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join("..", "frontend", "templates"))
 
 @app.route("/")
 def hello():
