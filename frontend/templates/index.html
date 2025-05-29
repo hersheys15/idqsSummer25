@@ -1,8 +1,46 @@
-<!doctype html>
-<html>
-  <head><title>Hello</title></head>
-  <body>
-    <h1>Hello {{ name }}!</h1>
-    <p>Welcome to my site.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Response</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #5a5a5a; }
+        h2 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .prompt, .response {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .prompt { background-color: #e9efff; }
+        .response { background-color: #e9f9e9; }
+        pre {
+            white-space: pre-wrap;       /* CSS3 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            font-family: monospace;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Llama LLM Interaction</h1>
+        
+        <div class="prompt">
+            <h2>Your Input (Prompt):</h2>
+            <p>{safe_input}</p>
+        </div>
+        
+        <div class="response">
+            <h2>LLM Response:</h2>
+            <pre>{safe_output_html}</pre>
+        </div>
+    </div>
+</body>
 </html>
