@@ -126,9 +126,18 @@
     <div class="container">
         <h1>Llama LLM Interaction</h1>
         
+        <!-- <form method="post" action="/">
+          <label for="prompt">Enter your question:</label><br>
+          <textarea id="prompt" name="prompt" rows="3" cols="60"></textarea><br>
+          <button type="submit">Submit</button>
+        </form> -->
+
         <div class="prompt">
-            <h2>Your Input (Prompt):</h2>
-            <p>{safe_input}</p> <!-- This will be filled dynamically with the user's input. -->
+          <form method="post" action="/">
+            <label for="prompt">Enter your question:</label><br>
+            <textarea id="prompt" name="prompt" rows="3" cols="60"></textarea><br>
+            <button type="submit">Submit</button>
+          </form>
         </div>
         
         <div class="response">
