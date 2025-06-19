@@ -133,17 +133,37 @@
         </form> -->
 
         <div class="prompt">
-          <form method="post" action="/">
-            <label for="prompt">Enter your question:</label><br>
-            <textarea id="prompt" name="prompt" rows="3" cols="60"></textarea><br>
-            <button type="submit">Submit</button>
-          </form>
+          <label for="prompt">Enter your question:</label><br>
+          <textarea id="prompt" name="prompt" rows="3" cols="60"></textarea><br>
+          <button id="submitBtn">Submit</button>
         </div>
         
         <div class="response">
-            <h2>LLM Response:</h2>
-            <pre>{safe_output_html}</pre> <!-- This will be filled dynamically with the LLM's response. -->
+          <h2>LLM Response:</h2>
+          <pre id="responseBox"></pre>
         </div>
+        
+        <script>
+        document.getElementById("submitBtn").addEventListener("click", function(e) {
+            e.preventDefault();
+            const userPrompt = document.getElementById("prompt").value;
+        
+            fetch("http://localhost:5000/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: userPrompt })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("responseBox").textContent = data.response;
+            })
+            .catch(err => {
+                document.getElementById("responseBox").textContent = "Error: " + err;
+            });
+        });
+        </script>        
     </div>
 </body>
 </html>
