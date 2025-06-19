@@ -1,2 +1,3 @@
 .env*
-ask_llama.py
+__pycache__
+# ask_llama*
