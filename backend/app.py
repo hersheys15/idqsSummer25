@@ -40,7 +40,7 @@ def generate(prompt):
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json
-    print("Received POST data:", data)  # Add this line
+    #print("Received POST data:", data)  # Add this line
     user_input = data.get("message", "")
     response = generate_response(user_input)
     return jsonify({"response": response})
