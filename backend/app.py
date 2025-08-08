@@ -1,8 +1,7 @@
 # main.py
-import os
-from flask import Flask, render_template, request, jsonify
+import os, json, requests
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context, render_template
 from datetime import datetime
-from flask import render_template
 from llm_handling import generate_response
 from flask_cors import CORS
 
@@ -15,36 +14,17 @@ CORS(app, resources={r"/ask": {"origins": "*"}})  # allows any frontend to acces
 def hello():
     return render_template("index.html")
 
-# This route will greet the user based on the username provided in the URL
-@app.route("/<username>")
-def greet_user(username):
-    hour = datetime.now().hour
-    if hour < 12:
-        greeting = "Good morning"
-    elif hour < 17:
-        greeting = "Good afternoon"
-    else:
-        greeting = "Good evening"
-    
-    return f"{greeting}, {username.capitalize()}!"
-
-# This route will handle the LLM response generation
-@app.route("/generate/<prompt>")
-def generate(prompt):
-    # Call the generate_response function from llm_handling.py
-    response = generate_response(prompt)
-    
-    # Return the generated response
-    return response
-
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json
-    #print("Received POST data:", data)  # Add this line
     user_input = data.get("message", "")
-    response = generate_response(user_input)
-    return jsonify({"response": response})
+    
+    return Response(
+    stream_with_context(generate_response(user_input, stream=True)),
+    content_type="text/plain"
+    )
 
 #This ensures that the Flask app runs when this script is executed directly
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    

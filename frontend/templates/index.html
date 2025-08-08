@@ -1,4 +1,3 @@
-<!-- definitely need to improve my ui, either do a line by line return as the ai generates or some loading symbol rather than just pushing submit and wondering if my request went through or not -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,13 +124,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Llama LLM Interaction</h1>
-        
-        <!-- <form method="post" action="/">
-          <label for="prompt">Enter your question:</label><br>
-          <textarea id="prompt" name="prompt" rows="3" cols="60"></textarea><br>
-          <button type="submit">Submit</button>
-        </form> -->
+        <h1>SNEHAMS IDQS</h1>
 
         <div class="prompt">
           <label for="prompt">Enter your question:</label><br>
@@ -141,29 +134,49 @@
         
         <div class="response">
           <h2>LLM Response:</h2>
+          <div id="loading" style="display: none; text-align: center; margin-bottom: 10px;">Loading...</div>
           <pre id="responseBox"></pre>
         </div>
         
         <script>
         document.getElementById("submitBtn").addEventListener("click", function(e) {
-            e.preventDefault();
-            const userPrompt = document.getElementById("prompt").value;
-        
-            fetch("http://localhost:5000/ask", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: userPrompt })
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("responseBox").textContent = data.response;
-            })
-            .catch(err => {
-                document.getElementById("responseBox").textContent = "Error: " + err;
-            });
+        e.preventDefault();
+        const userPrompt = document.getElementById("prompt").value;
+        const responseBox = document.getElementById("responseBox");
+        const loading = document.getElementById("loading");
+
+        responseBox.textContent = "";
+        loading.style.display = "block";
+
+        fetch("http://localhost:5000/ask", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: userPrompt })
+        })
+        .then(res => {
+            loading.style.display = "none";
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            function readChunk() {
+                reader.read().then(({ done, value }) => {
+                    if (done) return;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    responseBox.textContent += chunk;
+                    readChunk(); // keep reading
+                });
+            }
+
+            readChunk();
+        })
+        .catch(err => {
+            loading.style.display = "none";
+            responseBox.textContent = "Error: " + err;
         });
+    });
         </script>
     </div>
 </body>

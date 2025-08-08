@@ -1,39 +1,43 @@
-# def generate_response(prompt):
-#     # Example: store to local file (simple logging)
-#     with open("prompt_log.txt", "a") as f:
-#         f.write(f"{prompt}\n")
-
-#     # TODO: Replace this with real LLM API call
-#     response = f"Echo: {prompt}"  # or use OpenAI/Claude/Gemini/etc.
-#     requests.post("http://localhost:11434/api/generate", json={"model": "llama3", "prompt": prompt})
-#     return response
-
 #G Map APIKEY
 #AIzaSyAj1C-cYIoQVTgJuStqpTtGoLIjhTBbvdA
 
-import googlemaps
+import requests, json, googlemaps
 from datetime import datetime
-import requests
-import json
+from prompt_utils import retrieve_chunks, build_prompt
 
-def generate_response(prompt):
-    # TODO: Prompt engineering: ensure the prompt is well-formed
+def generate_response(prompt, stream=True):
+    retrieved_chunks = retrieve_chunks(prompt)
+    # Build the prompt using the retrieved chunks
+    prompt = build_prompt(prompt, retrieved_chunks)
+    # Make a POST request to the LLM API with the prompt
     response = requests.post(
         "http://localhost:11434/api/generate",
         json={"model": "llama3", "prompt": prompt},
         stream=True
     )
 
-    output = ""
-    for line in response.iter_lines():
-        if line:
-            data = json.loads(line.decode("utf-8"))
-            if "response" in data:
-                output += data["response"]
-            if data.get("done"):
-                break
-
-    return output.strip()
+    if stream:
+        # This is a generator — used for streaming line-by-line
+        def generator():
+            for line in response.iter_lines():
+                if line:
+                    data = json.loads(line.decode("utf-8"))
+                    if "response" in data:
+                        yield data["response"]
+                    if data.get("done"):
+                        break
+        return generator()
+    # else:
+    #     # For non-streaming mode
+    #     output = ""
+    #     for line in response.iter_lines():
+    #         if line:
+    #             data = json.loads(line.decode("utf-8"))
+    #             if "response" in data:
+    #                 output += data["response"]
+    #             if data.get("done"):
+    #                 break
+    #     return output.strip()
 
 
 # This module handles the interaction with the LLM (Large Language Model) API.
